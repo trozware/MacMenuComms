@@ -6,26 +6,39 @@ import SwiftUI
 struct MacMenuCommsApp: App {
   @FocusedBinding(\.selectedSymbol) var selectedSymbol
 
+  @State private var symbolName = "globe"
+  @State private var symbolColor: Color = .blue
+
   var body: some Scene {
     WindowGroup {
       ContentView()
+        .onChange(of: selectedSymbol?.name) { _, newValue in
+          symbolName = newValue ?? "globe"
+        }
+        .onChange(of: symbolName) { _, newValue in
+          selectedSymbol?.name = newValue
+        }
+        .onChange(of: selectedSymbol?.color) { _, newValue in
+          symbolColor = newValue ?? .blue
+        }
+        .onChange(of: symbolColor) { _, newValue in
+          selectedSymbol?.color = newValue
+        }
     }
     .commands {
       CommandMenu("Symbol") {
-        Menu("Symbol") {
+        Picker("Symbol", selection: $symbolName) {
           ForEach(Symbol.names, id: \.self) { name in
-            Button(name == selectedSymbol?.name ? "✔︎ \(name)" : name) {
-              selectedSymbol?.name = name
-            }
+            Text(name)
+              .tag(name)
           }
         }
         .disabled(selectedSymbol == nil)
 
-        Menu("Color") {
+        Picker("Color", selection: $symbolColor) {
           ForEach(Symbol.colors, id: \.self) { color in
-            Button(color == selectedSymbol?.color ? "✔︎ \(color.description)" : color.description) {
-              selectedSymbol?.color = color
-            }
+            Text(color.description)
+              .tag(color)
           }
         }
         .disabled(selectedSymbol == nil)
