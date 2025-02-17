@@ -3,8 +3,14 @@
 import SwiftUI
 
 struct ContentView: View {
+  @Environment(\.appearsActive) private var appearsActive
+
   @State private var symbolName: String = "globe"
   @State private var symbolColor: Color = .blue
+
+  let menuSelectedNotification = NotificationCenter.default
+    .publisher(for: .menuSelected)
+    .receive(on: RunLoop.main)
 
   var body: some View {
     VStack(spacing: 30) {
@@ -21,6 +27,15 @@ struct ContentView: View {
     }
     .padding()
     .frame(minWidth: 500)
+    .onReceive(menuSelectedNotification) { notification in
+      guard appearsActive else { return }
+
+      if let name = notification.object as? String {
+        symbolName = name
+      } else if let color = notification.object as? Color {
+        symbolColor = color
+      }
+    }
   }
 }
 

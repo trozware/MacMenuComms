@@ -3,8 +3,14 @@
 import SwiftUI
 
 struct SymbolPickerView: View {
+  @Environment(\.appearsActive) private var appearsActive
+
   @Binding var chosenName: String
   @Binding var chosenColor: Color
+
+  let menuSelectedNotification = NotificationCenter.default
+    .publisher(for: .menuSelected)
+    .receive(on: RunLoop.main)
 
   var body: some View {
     HStack(alignment: .top) {
@@ -37,6 +43,13 @@ struct SymbolPickerView: View {
           Text("Random")
         }
         .padding()
+      }
+    }
+    .onReceive(menuSelectedNotification) { notification in
+      guard appearsActive else { return }
+
+      if notification.object == nil {
+        chooseRandoms()
       }
     }
   }

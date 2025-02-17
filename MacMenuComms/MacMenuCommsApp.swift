@@ -13,7 +13,7 @@ struct MacMenuCommsApp: App {
         Menu("Symbol") {
           ForEach(["globe", "house", "display", "car.rear"], id: \.self) { name in
             Button(name) {
-              // action to change icon
+              NotificationCenter.default.post(name: .menuSelected, object: name)
             }
           }
         }
@@ -21,7 +21,7 @@ struct MacMenuCommsApp: App {
         Menu("Color") {
           ForEach([Color.blue, Color.red, Color.green, Color.yellow], id: \.self) { color in
             Button(color.description) {
-              // action to shange color
+              NotificationCenter.default.post(name: .menuSelected, object: color)
             }
           }
         }
@@ -29,10 +29,14 @@ struct MacMenuCommsApp: App {
         Divider()
 
         Button("Random") {
-          // action to choose random icon & color
+          NotificationCenter.default.post(name: .menuSelected, object: nil)
         }
         .keyboardShortcut("r")
       }
     }
   }
+}
+
+extension Notification.Name {
+  static let menuSelected = Notification.Name("menuSelected")
 }
