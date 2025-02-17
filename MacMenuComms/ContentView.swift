@@ -3,7 +3,7 @@
 import SwiftUI
 
 struct ContentView: View {
-  @StateObject private var symbol = Symbol()
+  @State private var symbol = Symbol()
 
   var body: some View {
     VStack(spacing: 30) {
@@ -13,12 +13,11 @@ struct ContentView: View {
         .frame(width: 90, height: 90)
       Text("Showing \(symbol.name) in \(symbol.color.description).")
 
-      SymbolPickerView()
+      SymbolPickerView(symbol: $symbol)
     }
     .padding()
     .frame(minWidth: 500)
-    .environmentObject(symbol)
-    .focusedSceneObject(symbol)
+    .focusedSceneValue(\.selectedSymbol, $symbol)
   }
 }
 

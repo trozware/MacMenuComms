@@ -4,7 +4,7 @@ import SwiftUI
 
 @main
 struct MacMenuCommsApp: App {
-  @FocusedObject var symbol : Symbol?
+  @FocusedBinding(\.selectedSymbol) var selectedSymbol
 
   var body: some Scene {
     WindowGroup {
@@ -13,28 +13,35 @@ struct MacMenuCommsApp: App {
     .commands {
       CommandMenu("Symbol") {
         Menu("Symbol") {
-          ForEach(["globe", "house", "display", "car.rear"], id: \.self) { name in
-            Button(name) {
-              symbol?.name = name
+          ForEach(Symbol.names, id: \.self) { name in
+            Button(name == selectedSymbol?.name ? "✔︎ \(name)" : name) {
+              selectedSymbol?.name = name
             }
           }
         }
+        .disabled(selectedSymbol == nil)
 
         Menu("Color") {
-          ForEach([Color.blue, Color.red, Color.green, Color.yellow], id: \.self) { color in
-            Button(color.description) {
-              symbol?.color = color
+          ForEach(Symbol.colors, id: \.self) { color in
+            Button(color == selectedSymbol?.color ? "✔︎ \(color.description)" : color.description) {
+              selectedSymbol?.color = color
             }
           }
         }
+        .disabled(selectedSymbol == nil)
 
         Divider()
 
         Button("Random") {
-          symbol?.chooseRandomSymbolAndColor()
+          selectedSymbol?.chooseRandomSymbolAndColor()
         }
         .keyboardShortcut("r")
+        .disabled(selectedSymbol == nil)
       }
     }
   }
+}
+
+extension FocusedValues {
+  @Entry var selectedSymbol: Binding<Symbol>?
 }
