@@ -1,4 +1,10 @@
-// Created on 17/2/2025.
+//
+// Sample project to accompany article at
+// https://troz.net/post/2025/mac_menu_data/
+//
+// by Sarah Reichelt
+// https://linktr.ee/trozware
+//
 
 import SwiftUI
 
