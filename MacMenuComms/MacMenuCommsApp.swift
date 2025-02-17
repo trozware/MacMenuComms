@@ -4,6 +4,8 @@ import SwiftUI
 
 @main
 struct MacMenuCommsApp: App {
+  @FocusedObject var symbol : Symbol?
+
   var body: some Scene {
     WindowGroup {
       ContentView()
@@ -13,7 +15,7 @@ struct MacMenuCommsApp: App {
         Menu("Symbol") {
           ForEach(["globe", "house", "display", "car.rear"], id: \.self) { name in
             Button(name) {
-              NotificationCenter.default.post(name: .menuSelected, object: name)
+              symbol?.name = name
             }
           }
         }
@@ -21,7 +23,7 @@ struct MacMenuCommsApp: App {
         Menu("Color") {
           ForEach([Color.blue, Color.red, Color.green, Color.yellow], id: \.self) { color in
             Button(color.description) {
-              NotificationCenter.default.post(name: .menuSelected, object: color)
+              symbol?.color = color
             }
           }
         }
@@ -29,14 +31,10 @@ struct MacMenuCommsApp: App {
         Divider()
 
         Button("Random") {
-          NotificationCenter.default.post(name: .menuSelected, object: nil)
+          symbol?.chooseRandomSymbolAndColor()
         }
         .keyboardShortcut("r")
       }
     }
   }
-}
-
-extension Notification.Name {
-  static let menuSelected = Notification.Name("menuSelected")
 }

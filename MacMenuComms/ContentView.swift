@@ -3,39 +3,22 @@
 import SwiftUI
 
 struct ContentView: View {
-  @Environment(\.appearsActive) private var appearsActive
-
-  @State private var symbolName: String = "globe"
-  @State private var symbolColor: Color = .blue
-
-  let menuSelectedNotification = NotificationCenter.default
-    .publisher(for: .menuSelected)
-    .receive(on: RunLoop.main)
+  @StateObject private var symbol = Symbol()
 
   var body: some View {
     VStack(spacing: 30) {
-      Image(systemName: symbolName)
+      Image(systemName: symbol.name)
         .font(.system(size: 72))
-        .foregroundStyle(symbolColor)
+        .foregroundStyle(symbol.color)
         .frame(width: 90, height: 90)
-      Text("Showing \(symbolName) in \(symbolColor).")
+      Text("Showing \(symbol.name) in \(symbol.color.description).")
 
-      SymbolPickerView(
-        chosenName: $symbolName,
-        chosenColor: $symbolColor
-      )
+      SymbolPickerView()
     }
     .padding()
     .frame(minWidth: 500)
-    .onReceive(menuSelectedNotification) { notification in
-      guard appearsActive else { return }
-
-      if let name = notification.object as? String {
-        symbolName = name
-      } else if let color = notification.object as? Color {
-        symbolColor = color
-      }
-    }
+    .environmentObject(symbol)
+    .focusedSceneObject(symbol)
   }
 }
 

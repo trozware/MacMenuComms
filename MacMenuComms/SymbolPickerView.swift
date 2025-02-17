@@ -3,25 +3,18 @@
 import SwiftUI
 
 struct SymbolPickerView: View {
-  @Environment(\.appearsActive) private var appearsActive
-
-  @Binding var chosenName: String
-  @Binding var chosenColor: Color
-
-  let menuSelectedNotification = NotificationCenter.default
-    .publisher(for: .menuSelected)
-    .receive(on: RunLoop.main)
+  @EnvironmentObject var symbol: Symbol
 
   var body: some View {
     HStack(alignment: .top) {
       VStack(spacing: 20) {
-        Picker("Symbol", selection: $chosenName) {
+        Picker("Symbol", selection: $symbol.name) {
           ForEach(["globe", "house", "display", "car.rear"], id: \.self) { name in
             Text(name)
           }
         }
 
-        Picker("Color", selection: $chosenColor) {
+        Picker("Color", selection: $symbol.color) {
           ForEach([Color.blue, Color.red, Color.green, Color.yellow], id: \.self) { color in
             Text(color.description)
               .foregroundColor(color)
@@ -29,13 +22,13 @@ struct SymbolPickerView: View {
         }
 
         Text(
-          "You have selected \(chosenName) as the symbol and \(chosenColor.description) as the color."
+          "You have selected \(symbol.name) in \(symbol.color.description)."
         )
       }
       .pickerStyle(.segmented)
 
       Button {
-        chooseRandoms()
+        symbol.chooseRandomSymbolAndColor()
       } label: {
         VStack {
           Image(systemName: "dice")
@@ -45,28 +38,10 @@ struct SymbolPickerView: View {
         .padding()
       }
     }
-    .onReceive(menuSelectedNotification) { notification in
-      guard appearsActive else { return }
-
-      if notification.object == nil {
-        chooseRandoms()
-      }
-    }
-  }
-
-  func chooseRandoms() {
-    let symbols = ["globe", "house", "display", "car.rear"]
-      .filter { $0 != chosenName }
-    let colors: [Color] = [.blue, .red, .green, .yellow]
-      .filter { $0 != chosenColor }
-
-    chosenName = symbols.randomElement() ?? "questionmark.diamond"
-    chosenColor = colors.randomElement() ?? .orange
   }
 }
 
 #Preview {
-  @Previewable @State var chosenName: String = "globe"
-  @Previewable @State var chosenColor: Color = .blue
-  SymbolPickerView(chosenName: $chosenName, chosenColor: $chosenColor)
+  SymbolPickerView()
+    .environmentObject(Symbol())
 }
