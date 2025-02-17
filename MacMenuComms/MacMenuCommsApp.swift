@@ -18,36 +18,27 @@ struct MacMenuCommsApp: App {
   var body: some Scene {
     WindowGroup {
       ContentView()
-        .onChange(of: selectedSymbol?.name) { _, newValue in
-          symbolName = newValue ?? "globe"
-        }
-        .onChange(of: symbolName) { _, newValue in
-          selectedSymbol?.name = newValue
-        }
-        .onChange(of: selectedSymbol?.color) { _, newValue in
-          symbolColor = newValue ?? .blue
-        }
-        .onChange(of: symbolColor) { _, newValue in
-          selectedSymbol?.color = newValue
-        }
     }
     .commands {
       CommandMenu("Symbol") {
-        Picker("Symbol", selection: $symbolName) {
-          ForEach(Symbol.names, id: \.self) { name in
-            Text(name)
-              .tag(name)
+        if let selectedSymbol = Binding($selectedSymbol) {
+          Picker("Symbol", selection: selectedSymbol.name) {
+            ForEach(Symbol.names, id: \.self) { name in
+              Text(name)
+                .tag(name)
+            }
+          }
+          Picker("Color", selection: selectedSymbol.color) {
+            ForEach(Symbol.colors, id: \.self) { color in
+              Text(color.description)
+                .tag(color)
+            }
           }
         }
-        .disabled(selectedSymbol == nil)
-
-        Picker("Color", selection: $symbolColor) {
-          ForEach(Symbol.colors, id: \.self) { color in
-            Text(color.description)
-              .tag(color)
-          }
+        else {
+          Text("Symbol")
+          Text("Color")
         }
-        .disabled(selectedSymbol == nil)
 
         Divider()
 
