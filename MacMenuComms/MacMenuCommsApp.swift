@@ -21,24 +21,22 @@ struct MacMenuCommsApp: App {
     }
     .commands {
       CommandMenu("Symbol") {
-        if let selectedSymbol = Binding($selectedSymbol) {
-          Picker("Symbol", selection: selectedSymbol.name) {
-            ForEach(Symbol.names, id: \.self) { name in
-              Text(name)
-                .tag(name)
-            }
-          }
-          Picker("Color", selection: selectedSymbol.color) {
-            ForEach(Symbol.colors, id: \.self) { color in
-              Text(color.description)
-                .tag(color)
-            }
+        
+        Picker("Symbol", selection: Binding($selectedSymbol)?.name ?? .constant("globe") ) {
+          ForEach(Symbol.names, id: \.self) { name in
+            Text(name)
+              .tag(name)
           }
         }
-        else {
-          Text("Symbol")
-          Text("Color")
+        .disabled(selectedSymbol == nil)
+        
+        Picker("Color", selection: Binding($selectedSymbol)?.color ?? .constant(Color.blue)) {
+          ForEach(Symbol.colors, id: \.self) { color in
+            Text(color.description)
+              .tag(color)
+          }
         }
+        .disabled(selectedSymbol == nil)
 
         Divider()
 
