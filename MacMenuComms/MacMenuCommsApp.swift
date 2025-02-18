@@ -12,31 +12,32 @@ import SwiftUI
 struct MacMenuCommsApp: App {
   @FocusedBinding(\.selectedSymbol) var selectedSymbol
 
-  @State private var symbolName = "globe"
-  @State private var symbolColor: Color = .blue
-
   var body: some Scene {
     WindowGroup {
       ContentView()
     }
     .commands {
       CommandMenu("Symbol") {
-        
-        Picker("Symbol", selection: Binding($selectedSymbol)?.name ?? .constant("globe") ) {
-          ForEach(Symbol.names, id: \.self) { name in
-            Text(name)
-              .tag(name)
+        if let selectedSymbol = Binding($selectedSymbol) {
+          Picker("Symbol", selection: selectedSymbol.name) {
+            ForEach(Symbol.names, id: \.self) { name in
+              Text(name)
+                .tag(name)
+            }
           }
-        }
-        .disabled(selectedSymbol == nil)
-        
-        Picker("Color", selection: Binding($selectedSymbol)?.color ?? .constant(Color.blue)) {
-          ForEach(Symbol.colors, id: \.self) { color in
-            Text(color.description)
-              .tag(color)
+          .pickerStyle(.inline)
+
+          Picker("Color", selection: Binding($selectedSymbol)?.color ?? .constant(Color.blue)) {
+            ForEach(Symbol.colors, id: \.self) { color in
+              Text(color.description)
+                .tag(color)
+            }
           }
+          .pickerStyle(.inline)
+        } else {
+          Text("Symbol")
+          Text("Color")
         }
-        .disabled(selectedSymbol == nil)
 
         Divider()
 
