@@ -18,30 +18,19 @@ struct MacMenuCommsApp: App {
   var body: some Scene {
     WindowGroup {
       ContentView()
-        .onChange(of: selectedSymbol?.name) { _, newValue in
-          symbolName = newValue ?? "globe"
-        }
-        .onChange(of: symbolName) { _, newValue in
-          selectedSymbol?.name = newValue
-        }
-        .onChange(of: selectedSymbol?.color) { _, newValue in
-          symbolColor = newValue ?? .blue
-        }
-        .onChange(of: symbolColor) { _, newValue in
-          selectedSymbol?.color = newValue
-        }
     }
     .commands {
       CommandMenu("Symbol") {
-        Picker("Symbol", selection: $symbolName) {
+        
+        Picker("Symbol", selection: Binding($selectedSymbol)?.name ?? .constant("globe") ) {
           ForEach(Symbol.names, id: \.self) { name in
             Text(name)
               .tag(name)
           }
         }
         .disabled(selectedSymbol == nil)
-
-        Picker("Color", selection: $symbolColor) {
+        
+        Picker("Color", selection: Binding($selectedSymbol)?.color ?? .constant(Color.blue)) {
           ForEach(Symbol.colors, id: \.self) { color in
             Text(color.description)
               .tag(color)
